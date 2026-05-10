@@ -113,7 +113,7 @@ def ask_question(question: str):
         "match_documents",
         {
             "query_embedding": query_embedding,
-            "match_count": 3
+            "match_count": 10
         }
     ).execute()
 
