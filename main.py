@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from supabase import create_client
 from dotenv import load_dotenv
-from sentence_transformers import SentenceTransformer
+# from sentence_transformers import SentenceTransformer
 from openai import OpenAI
 from pypdf import PdfReader
 import os
@@ -24,7 +24,7 @@ client = OpenAI(api_key=OPENAI_API_KEY)
 app = FastAPI()
 
 # Embedding model
-embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
+# embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
 
 
 @app.get("/")
@@ -78,7 +78,12 @@ def process_pdfs():
         # Store chunks + embeddings
         for chunk in chunks:
 
-            embedding = embedding_model.encode(chunk).tolist()
+            embedding_response = client.embeddings.create(
+                model="text-embedding-3-small",
+                input=chunk
+            )
+
+            embedding = embedding_response.data[0].embedding
 
             supabase.table("document_chunks").insert({
                 "document_id": document_id,
@@ -96,7 +101,12 @@ def process_pdfs():
 def ask_question(question: str):
 
     # Convert question into embedding
-    query_embedding = embedding_model.encode(question).tolist()
+    embedding_response = client.embeddings.create(
+        model="text-embedding-3-small",
+        input=question
+    )
+
+    query_embedding = embedding_response.data[0].embedding
 
     # Search relevant chunks
     response = supabase.rpc(
