@@ -128,13 +128,19 @@ def ask_question(question: str):
 
     print(context)
 
+    
     # Prompt
     prompt = f"""
 You are a mining safety assistant.
 
-Answer ONLY from the provided safety documents.
+Use ONLY the provided safety documents to answer.
 
-If answer is not available in documents, say:
+Rules:
+- If the user asks an acronym, abbreviation, short form, or single keyword, explain it using the provided context.
+- If the full form/expansion exists in documents, provide it.
+- If user asks only a term (example: SIMTARS), explain what it refers to from documents.
+- Do not reject one-word queries if relevant information exists in context.
+- If information is truly unavailable, reply exactly:
 'Information not found in uploaded safety documents.'
 
 Safety Documents:
