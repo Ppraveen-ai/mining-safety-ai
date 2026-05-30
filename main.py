@@ -122,8 +122,11 @@ def ask_question(question: str):
     # Build context from retrieved chunks
     context = ""
 
-    for match in matches:
+    for i, match in enumerate(matches):
+        context += f"\n--- Chunk {i+1} ---\n"
         context += match["chunk_text"] + "\n\n"
+
+    print(context)
 
     # Prompt
     prompt = f"""
@@ -160,5 +163,6 @@ User Question:
 
     return {
         "question": question,
+        "retrieved_chunks": matches,
         "answer": answer
     }
